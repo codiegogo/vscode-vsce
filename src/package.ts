@@ -593,15 +593,11 @@ export class ManifestProcessor extends BaseProcessor {
 		}
 
 		if (this.manifest.publisher === 'vscode-samples') {
-			throw new Error("It's not allowed to use the 'vscode-samples' publisher. Learn more at: https://code.visualstudio.com/api/working-with-extensions/publishing-extension.");
+			util.log.warn("It's not allowed to use the 'vscode-samples' publisher. Learn more at: https://code.visualstudio.com/api/working-with-extensions/publishing-extension.");
 		}
 
 		if (!this.options.allowMissingRepository && !this.manifest.repository) {
 			util.log.warn(`A 'repository' field is missing from the 'package.json' manifest file.\nUse --allow-missing-repository to bypass.`);
-
-			if (!/^y$/i.test(await util.read('Do you want to continue? [y/N] '))) {
-				throw new Error('Aborted');
-			}
 		}
 
 		if (!this.options.allowStarActivation && this.manifest.activationEvents?.some(e => e === '*')) {
@@ -1070,10 +1066,6 @@ export class LicenseProcessor extends BaseProcessor {
 	async onEnd(): Promise<void> {
 		if (!this.didFindLicense && !this.options.skipLicense) {
 			util.log.warn(`${this.expectedLicenseName} not found`);
-
-			if (!/^y$/i.test(await util.read('Do you want to continue? [y/N] '))) {
-				throw new Error('Aborted');
-			}
 		}
 	}
 }
